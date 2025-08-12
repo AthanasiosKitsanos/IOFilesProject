@@ -42,7 +42,7 @@ int main()
         return -1;
     }
 
-    std::ofstream* outputFile = new(rawMemory) std::ofstream("output.txt");
+    std::ofstream* outputFile = new(rawMemory) std::ofstream("output.txt", std::ios::app); //adding the std::ios::app
 
     std::cout << "\nOutput file" << std::endl;
     if(!outputFile->is_open())
@@ -52,8 +52,24 @@ int main()
         return -1;
     }
 
-    *outputFile << "Hello" << std::endl;
-    *outputFile << "This text was written by the program";
+    while(true)
+    {   
+        
+        std::cout << "Begin Writting or press Esc to exit" << std::endl;
+        std::getline(std::cin, line);
+
+        *outputFile << line << std::endl;
+
+        if(_kbhit())
+        {
+            int ch = _getch();
+            if(ch == 27)
+            {
+                std::cout << "Pressed Esc. Now exiting" << std::endl;
+                break;
+            }
+        }
+    }
 
     outputFile->close();
 
