@@ -1,0 +1,2 @@
+Hello
+This text was written by the program
