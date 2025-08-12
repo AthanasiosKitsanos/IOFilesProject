@@ -1,2 +1,5 @@
 Hello
-This text was written by the program
+This text was written by the programThis is added using std::ios::appThis is some extra stuff
+Writting in a loop
+Until I press escape
+Trying again
