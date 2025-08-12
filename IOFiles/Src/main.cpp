@@ -112,9 +112,41 @@ int main()
     inputFile->~basic_ifstream();
     inputFile = nullptr;
 
+    //-------------------------------------------------------------------------------------------------------
+    std::cout << "Output Binary" << std::endl;
+
+    buffer->resize(5);
+
+    buffer->at(0) = 0x48;
+    buffer->at(1) = 0x65;
+    buffer->at(2) = 0x6C;
+    buffer->at(3) = 0x6C;
+    buffer->at(4) = 0x6F;
+
+    outputFile = new(rawMemory) std::ofstream("output.bin", std::ios::binary);
+
+    if(!outputFile->is_open())
+    {
+        std::cerr << "Failed to open file, please check if file exists" << std::endl;
+        std::cin.get();
+        return -1;
+    }
+
+    outputFile->write(buffer->data(), buffer->size());
+
+    outputFile->close();
+
+    std::cout << "data have been registered" << std::endl;
+
+    outputFile->~basic_ofstream();
+    outputFile = nullptr;
+
     buffer->~vector<char>();
+    buffer = nullptr;
+    
     _aligned_free(rawBuffer);
     rawBuffer = nullptr;
+    buffer = nullptr;
 
     //-------------------------------------------------------------------------------------------------------
     _aligned_free(rawMemory);
