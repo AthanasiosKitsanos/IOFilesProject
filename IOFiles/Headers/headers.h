@@ -6,3 +6,5 @@
 #include <string>
 #include <malloc.h>
 #include <conio.h>
+#include <iomanip>
+#include <vector>

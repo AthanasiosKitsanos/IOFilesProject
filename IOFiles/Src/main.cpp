@@ -34,6 +34,7 @@ int main()
     inputFile->~basic_ifstream();
     inputFile = nullptr;
 
+   //-------------------------------------------------------------------------------------------------------
     rawMemory = _aligned_realloc(rawMemory, sizeof(std::ofstream), alignof(std::ofstream));
     if(!rawMemory)
     {
@@ -52,24 +53,9 @@ int main()
         return -1;
     }
 
-    while(true)
-    {   
-        
-        std::cout << "Begin Writting or press Esc to exit" << std::endl;
-        std::getline(std::cin, line);
-
-        *outputFile << line << std::endl;
-
-        if(_kbhit())
-        {
-            int ch = _getch();
-            if(ch == 27)
-            {
-                std::cout << "Pressed Esc. Now exiting" << std::endl;
-                break;
-            }
-        }
-    }
+    // *outputFile << "Hello" << std::endl;
+    // *outputFile << "This text was written by the program";
+    // *outputFile << "This is added using std::ios::app";
 
     outputFile->close();
 
@@ -78,7 +64,59 @@ int main()
 
     outputFile->~basic_ofstream();
     outputFile = nullptr;
+    
+    //-------------------------------------------------------------------------------------------------------
+    rawMemory = _aligned_realloc(rawMemory, sizeof(std::ifstream), alignof(std::ifstream));
+    if(!rawMemory)
+    {
+        std::cout << "Could not allocate for binary ofstream";
+        std::cin.get();
+        return -1;
+    }
 
+    std::cout << "Binary file" << std:: endl;
+    inputFile = new(rawMemory) std::ifstream("input.bin", std::ios::binary);
+
+    if(!inputFile->is_open())
+    {
+        std::cerr << "Could not open file. Please check if file exists" << std::endl;
+        std::cin.get();
+        return - 1;
+    }
+
+    //Going to the end to get the size of the file
+    inputFile->seekg(0, std::ios::end);
+    std::streampos size = inputFile->tellg();
+
+    //Going to the beginning of the file
+    inputFile->seekg(0, std::ios::beg);
+
+    //Buffer creationg to read byte by byte
+    void* rawBuffer = _aligned_malloc(sizeof(std::vector<char>), alignof(std::vector<char>));
+    std::vector<char>* buffer = new(rawBuffer) std::vector<char>();
+
+    //Reading all the bytes to the buffer
+    inputFile->read(buffer->data(), size);
+
+    inputFile->close();
+
+    for(size_t i = 0; i < buffer->size(); i++)
+    {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(static_cast<unsigned char>(buffer->at(i))) <<  " ";
+        if((i + 1) % 16 == 0)
+        {
+            std::cout << std::endl;
+        }
+    }
+
+    inputFile->~basic_ifstream();
+    inputFile = nullptr;
+
+    buffer->~vector<char>();
+    _aligned_free(rawBuffer);
+    rawBuffer = nullptr;
+
+    //-------------------------------------------------------------------------------------------------------
     _aligned_free(rawMemory);
     rawMemory = nullptr;
 
